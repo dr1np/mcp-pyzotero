@@ -11,7 +11,7 @@ import urllib
 import httpx
 from pyzotero import zotero
 
-from mcp.server.fastmcp import FastMCP, Context
+from fastmcp import FastMCP, Context
 from mcp.types import EmbeddedResource, BlobResourceContents
 
 mcp = FastMCP("Zotero", dependencies=["pyzotero",
@@ -538,6 +538,79 @@ async def get_item_fulltext(item_key: str, context: Optional[Context] = None) ->
                 "item_key": item_key,
         }, indent=2)
 
+
+@mcp.tool(description="Get the actual file paths of PDF attachments for an item in the library")
+async def get_item_pdf_paths(item_key: str, 
+                            context: Optional[Context] = None) -> str:
+    """
+    Get the actual file paths of all PDF attachments for a specific item.
+    This is useful for the AI model to directly access PDF files from the file system.
+    
+    Args:
+        item_key: The item's key/ID
+    
+    Returns:
+        JSON containing a list of PDF attachments with their file paths
+    """
+    try:
+        client = _get_zotero_client()
+        children = client.children(item_key)
+        
+        pdf_attachments = []
+        for idx, item in enumerate(children):
+            if item['data']['itemType'] == 'attachment' and item['data'].get('contentType') == 'application/pdf':
+                try:
+                    # Get the file URL using the file_url method
+                    pdf_uri = urllib.parse.unquote(
+                        client.file_url(item['key']), 
+                        encoding='utf-8', 
+                        errors='replace'
+                    )
+                    parsed_uri = urllib.parse.urlparse(pdf_uri)
+                    pdf_path = pathlib.Path(parsed_uri.path.lstrip('/'))
+                    
+                    # Check if file exists
+                    file_exists = pdf_path.exists()
+                    
+                    pdf_attachments.append({
+                        'index': idx,
+                        'key': item['key'],
+                        'title': item['data'].get('title', 'Untitled'),
+                        'filename': item['data'].get('filename', 'Unknown'),
+                        'path': str(pdf_path),
+                        'exists': file_exists,
+                        'size_bytes': pdf_path.stat().st_size if file_exists else None
+                    })
+                except Exception as e:
+                    pdf_attachments.append({
+                        'index': idx,
+                        'key': item['key'],
+                        'title': item['data'].get('title', 'Untitled'),
+                        'filename': item['data'].get('filename', 'Unknown'),
+                        'error': str(e)
+                    })
+        
+        if len(pdf_attachments) == 0:
+            return json.dumps({
+                "error": "No PDF attachments found",
+                "item_key": item_key,
+                "suggestion": "This item may not have any PDF attachments"
+            }, indent=2)
+        
+        return json.dumps({
+            "item_key": item_key,
+            "pdf_count": len(pdf_attachments),
+            "attachments": pdf_attachments
+        }, indent=2)
+        
+    except Exception as e:
+        if context and hasattr(context, '_fastmcp'):
+            await context.error(f"Failed to fetch PDF paths for item {item_key}: {str(e)}")
+        return json.dumps({
+            "error": f"Failed to fetch PDF paths. Message: {str(e)}",
+            "item_key": item_key,
+        }, indent=2)
+
 # FIXME: Misses way to provide PDF to Claude
 # @mcp.tool(description="Retrieve PDF for item in the library")
 async def get_item_pdf(item_key: str, 
@@ -672,8 +745,7 @@ def main():
     client = _get_zotero_client()
     client.creator_fields()
     
-    # Initialize and run the server using stdio transport (for MCP protocol)
-    mcp.run()
+    mcp.run(transport="streamable-http", port=12350)
 
 
 if __name__ == "__main__":
