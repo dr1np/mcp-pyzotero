@@ -14,8 +14,7 @@ from pyzotero import zotero
 from fastmcp import FastMCP, Context
 from mcp.types import EmbeddedResource, BlobResourceContents
 
-mcp = FastMCP("Zotero", dependencies=["pyzotero",
-                                      "mcp[cli]"])
+mcp = FastMCP("Zotero")
 
 class ZoteroWrapper(zotero.Zotero):
     """ Wrapper for pyzotero client with error handling and User ID selection
@@ -744,7 +743,7 @@ def main():
     # Talk with Zotero once
     client = _get_zotero_client()
     client.creator_fields()
-    
+
     mcp.run(transport="streamable-http", port=12350)
 
 
