@@ -10,7 +10,7 @@ requires-python = ">= 3.10"
 dependencies = [
     "mcp[cli] >= 1.12.2",
     "pyzotero >= 1.6.11",
-    "httpx"
+    "httpx[socks]"
 ]
 classifiers = [
 "Development Status :: 3 - Alpha",
@@ -18,8 +18,8 @@ classifiers = [
 "Programming Language :: Python :: 3",
 ]
 
-[project.entry-points."mcp"]
-"zotero" = "mcp_pyzotero.server:main"
+[project.scripts]
+zotero = "zotero:main"
 
 [project.urls]
 Homepage = "https://github.com/dr1np/mcp-pyzotero"

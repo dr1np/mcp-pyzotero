@@ -24,31 +24,54 @@ uv sync
 3. Enable the local API in Zotero 7:
    ![Zotero Local API Settings](assets/LocalAPISettings.png)
 
-4. Add the server to your local Claude installation:
-```bash
-uv run mcp install zotero.py
+4. Add to Claude Desktop configuration (see Configuration section below)
+
+### Option 2: Run from local code with Claude Desktop
+
+Edit the configuration for your Claude Desktop software:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+Add the Zotero entry (replace `/path/to/mcp-pyzotero` with your actual project path):
+
+```json
+{
+    "mcpServers": {
+        "Zotero": {
+            "command": "uv",
+            "args": ["run", "--project", "/path/to/mcp-pyzotero", "python", "zotero.py"]
+        }
+    }
+}
 ```
 
-### Run encapsulated with uvx (Should work)
-Edit the configuration for your Claude Desktop softare in the file.
+Example for common locations:
+- macOS/Linux: `"args": ["run", "--project", "/Users/username/path/mcp-pyzotero", "python", "zotero.py"]`
+- Windows: `"args": ["run", "--project", "C:\\Users\\username\\path\\mcp-pyzotero", "python", "zotero.py"]`
 
-    - macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
-    - Windows: %APPDATA%\Claude\claude_desktop_config.json
+### Option 3: Run encapsulated with uvx (No local installation needed)
+```json
+### Option 3: Run encapsulated with uvx (No local installation needed)
 
-and add the Zotero entry
+If you don't want to clone the repository locally, you can use `uvx` to run directly from GitHub:
+
 ```json
 {
     "mcpServers": {
         "Zotero": {
             "command": "uvx",
-            "args": ["--from", "git+https://github.com/dr1np/mcp-pyzotero.git", 
+            "args": ["--from", "git+https://github.com/dr1np/mcp-pyzotero.git",
                      "--with", "mcp[cli]",
                      "--with", "pyzotero",
-                     "mcp", "run", "zotero.py"
-                    ],
+                     "--with", "httpx[socks]",
+                     "python", "-m", "zotero"
+                    ]
         }
     }
 }
+```
+
 ```
 
 ## Configuration
@@ -57,7 +80,28 @@ The connector is configured to work with local Zotero installations and currentl
 By default it uses the userid `0`, but you can also set the environment variable `ZOTERO_USER_ID` if needed:
 
 ```bash
-uv run mcp install zotero.py -v ZOTERO_USER_ID=0
+# For local installation
+export ZOTERO_USER_ID=0
+uv run python zotero.py
+
+# Or add to Claude Desktop config
+# Add "env": {"ZOTERO_USER_ID": "0"} to the mcpServers entry
+```
+
+### Example Claude Desktop Configuration with Environment Variable
+
+```json
+{
+    "mcpServers": {
+        "Zotero": {
+            "command": "uv",
+            "args": ["run", "--project", "/path/to/mcp-pyzotero", "python", "zotero.py"],
+            "env": {
+                "ZOTERO_USER_ID": "0"
+            }
+        }
+    }
+}
 ```
 
 ## Available Functions

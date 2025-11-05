@@ -666,10 +666,15 @@ async def search_library(query: str,
                 "query": query,
         }, indent=2)
 
-if __name__ == "__main__":
+def main():
+    """Entry point for the MCP server"""
     # Talk with Zotero once
     client = _get_zotero_client()
     client.creator_fields()
     
-    # Initialize and run the server
-    mcp.run(transport="streamable-http")
+    # Initialize and run the server using stdio transport (for MCP protocol)
+    mcp.run()
+
+
+if __name__ == "__main__":
+    main()
