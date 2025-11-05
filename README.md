@@ -16,7 +16,7 @@ Information about Claude Desktop interacting with MCPs can be found [here](https
 
 2. Checkout the git project to local space and activate the virtual environment inside:
 ```bash
-git clone https://github.com/gyger/mcp-pyzotero.git
+git clone https://github.com/dr1np/mcp-pyzotero.git
 cd mcp-pyzotero
 uv sync
 ```
@@ -41,7 +41,7 @@ and add the Zotero entry
     "mcpServers": {
         "Zotero": {
             "command": "uvx",
-            "args": ["--from", "git+https://github.com/gyger/mcp-pyzotero.git", 
+            "args": ["--from", "git+https://github.com/dr1np/mcp-pyzotero.git", 
                      "--with", "mcp[cli]",
                      "--with", "pyzotero",
                      "mcp", "run", "zotero.py"
@@ -63,12 +63,80 @@ uv run mcp install zotero.py -v ZOTERO_USER_ID=0
 ## Available Functions
 
 ### Available tools
-- `get_zotero_summary()`: Lists properties about your library including collections, recent items or tags.
+- `get_zotero_information()`: Returns library information including summary, collections, recent items, or tags
 - `get_collection_items(collection_key)`: Get all items in a specific collection
-- `get_items_metadata(item_key)`: Get detailed information about specific paper(s), including abstract.
-- `search_library(query, mode)`: Search your Zotero library, with two possible modes: everything or titleCreatorYear.
+- `get_items_metadata(item_key)`: Get detailed information about specific paper(s), including abstract and BibTeX keys
+- `search_library(query, mode)`: Search your Zotero library with configurable modes
 
-This functionality should be extended in the future.
+### Tool Details
+
+#### get_zotero_information
+Returns information about your Zotero library. By default returns a summary, but can be configured to return:
+- `summary`: Library overview and group information
+- `recent`: Recently added items (default limit: 10)
+- `tags`: All tags used in the library
+- `collections`: Available collections
+
+**Example usage:**
+```
+get_zotero_information(properties="summary,recent", limit=5)
+```
+
+#### get_collection_items
+Retrieves all items from a specific collection.
+
+**Parameters:**
+- `collection_key`: The collection identifier
+- `limit`: Optional limit on number of items returned
+
+#### get_items_metadata
+Gets detailed metadata for specific items.
+
+**Parameters:**
+- `item_key`: Item key(s), comma-separated for multiple items
+- `include_abstract`: Include abstract (default: true)
+- `include_bibtex`: Include BibTeX citation key (default: true)
+
+#### search_library
+Searches the Zotero library with flexible query options.
+
+**Parameters:**
+- `query`: Search term
+- `qmode`: Search mode - "titleCreatorYear" (default) or "everything"
+- `itemType`: Item type filter (default: "-attachment" to exclude attachments)
+- `tag`: Tag filter
+- `include_abstract`: Include abstracts in results
+- `limit`: Result limit
+
+## Testing
+
+The repository includes test scripts to verify functionality:
+
+```bash
+# Basic functionality test
+python simple_test.py
+
+# Advanced functionality test
+python advanced_test.py
+```
+
+### Test Results Summary
+
+Based on testing with a library containing 619 items:
+
+✅ **Library Information**: Successfully retrieves library stats, collections, and tags  
+✅ **Search Functionality**: Finds items by keywords (e.g., "machine learning")  
+✅ **Collection Access**: Retrieves items from specific collections  
+✅ **Item Metadata**: Gets detailed information including abstracts and authors  
+✅ **Item Types**: Supports journal articles, conference papers, books, etc.  
+✅ **Attachments**: Detects PDF attachments and other file types  
+✅ **Better BibTeX Integration**: Citation key support (when Better BibTeX plugin is installed)
+
+**Sample Output:**
+- Library contains 619 items across multiple collections
+- Collections include "代码评审" (Code Review), "多分类" (Multiclass), etc.
+- Search results include full metadata with DOI, URLs, and tags
+- Supports both Chinese and English content
 
 ## Requirements
 
@@ -79,7 +147,7 @@ This functionality should be extended in the future.
 
 ## Contributing
 
-Contributions are welcome! Please visit the [GitHub repository](https://github.com/gyger/mcp-pyzotero) to:
+Contributions are welcome! Please visit the [GitHub repository](https://github.com/dr1np/mcp-pyzotero) to:
 - Report issues
 - Submit pull requests
 - Suggest improvements

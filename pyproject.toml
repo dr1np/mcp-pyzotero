@@ -18,7 +18,10 @@ classifiers = [
 "Programming Language :: Python :: 3",
 ]
 
+[project.entry-points."mcp"]
+"zotero" = "mcp_pyzotero.server:main"
+
 [project.urls]
-Homepage = "https://github.com/gyger/mcp-pyzotero"
-Repository = "https://github.com/gyger/mcp-pyzotero"
-Issues = "https://github.com/gyger/mcp-pyzotero/issues"
+Homepage = "https://github.com/dr1np/mcp-pyzotero"
+Repository = "https://github.com/dr1np/mcp-pyzotero"
+Issues = "https://github.com/dr1np/mcp-pyzotero/issues"

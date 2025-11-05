@@ -36,10 +36,10 @@ class ZoteroWrapper(zotero.Zotero):
             self._check_bbt_library_ready()
             
         except Exception as e:
-            return json.dumps({
+            raise Exception(json.dumps({
                 "error": "Failed to initialize Zotero connection.",
                 "message": str(e)
-            }, indent=2)
+            }, indent=2))
 
     def _check_better_bibtex_endpoint(self) -> bool:
         """Check if the Better BibTeX JSON-RPC endpoint exists"""
