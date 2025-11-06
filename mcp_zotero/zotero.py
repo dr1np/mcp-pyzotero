@@ -14,7 +14,7 @@ from pyzotero import zotero
 from fastmcp import FastMCP, Context
 from mcp.types import EmbeddedResource, BlobResourceContents
 
-mcp = FastMCP("Zotero")
+mcp = FastMCP("mcp-pyzotero")
 
 class ZoteroWrapper(zotero.Zotero):
     """ Wrapper for pyzotero client with error handling and User ID selection
