@@ -8,9 +8,9 @@ authors = [
 ]
 requires-python = ">= 3.10"
 dependencies = [
-    "mcp[cli] >= 1.12.2",
     "pyzotero >= 1.6.11",
-    "httpx[socks]"
+    "httpx[socks]",
+    "fastmcp"
 ]
 classifiers = [
 "Development Status :: 3 - Alpha",

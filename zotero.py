@@ -744,7 +744,8 @@ def main():
     client = _get_zotero_client()
     client.creator_fields()
 
-    mcp.run(transport="streamable-http", port=12350)
+    # mcp.run(transport="streamable-http", port=12350)
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":
