@@ -19,6 +19,9 @@ classifiers = [
 "Programming Language :: Python :: 3",
 ]
 
+[project.scripts]
+mcp-pyzotero = "zotero:main"
+
 [project.urls]
 Homepage = "https://github.com/dr1np/mcp-pyzotero"
 Repository = "https://github.com/dr1np/mcp-pyzotero"

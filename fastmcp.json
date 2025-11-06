@@ -1,6 +1,6 @@
 {
   "entrypoint": "zotero.py",
   "environment": {
-    "dependencies": ["pyzotero", "mcp[cli]"]
+    "dependencies": ["pyzotero", "mcp[cli]", "httpx[socks]", "typer"]
   }
 }

@@ -9,61 +9,70 @@ This builds on the shoulders of the fantastic [pyzotero](https://github.com/ursc
 
 ## Installation
 
-### Run from local code (Recommended)
-Information about Claude Desktop interacting with MCPs can be found [here](https://modelcontextprotocol.io/quickstart/user).
+### Quick Start with uvx (Recommended)
 
-1. Use `uv`. Installation instructions can be found [here](https://docs.astral.sh/uv/getting-started/installation/).
+This is the simplest way to run the MCP server directly from GitHub without any local setup:
 
-2. Checkout the git project to local space and activate the virtual environment inside:
 ```bash
-git clone https://github.com/dr1np/mcp-pyzotero.git
-cd mcp-pyzotero
-uv sync
+uvx --from git+https://github.com/dr1np/mcp-pyzotero.git mcp-pyzotero
 ```
 
-3. Enable the local API in Zotero 7:
-   ![Zotero Local API Settings](assets/LocalAPISettings.png)
+Or add it to your Claude Desktop configuration:
 
-4. Add the server to your local Claude installation:
-```bash
-uv run mcp install zotero.py
-```
+**Configuration files:**
 
-### Run encapsulated with uvx (Should work)
-Edit the configuration for your Claude Desktop softare in the file.
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
-    - macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
-    - Windows: %APPDATA%\Claude\claude_desktop_config.json
+**Add this entry:**
 
-and add the Zotero entry
 ```json
 {
     "mcpServers": {
         "Zotero": {
             "command": "uvx",
-            "args": ["--from", "git+https://github.com/dr1np/mcp-pyzotero.git", 
-                     "--with", "mcp[cli]",
-                     "--with", "pyzotero",
-                     "mcp", "run", "zotero.py"
-                    ],
+            "args": ["--from", "git+https://github.com/dr1np/mcp-pyzotero.git", "mcp-pyzotero"],
+            "disabled": false
         }
     }
 }
 ```
 
+### Run from local code
+
+Information about Claude Desktop interacting with MCPs can be found [here](https://modelcontextprotocol.io/quickstart/user).
+
+1. Use `uv`. Installation instructions can be found [here](https://docs.astral.sh/uv/getting-started/installation/).
+
+2. Checkout the git project to local space and activate the virtual environment inside:
+
+```bash
+git clone https://github.com/dr1np/mcp-pyzotero.git
+cd mcp-pyzotero
+uv sync
+uv run mcp-pyzotero
+```
+
+3. Or install the MCP server locally:
+
+```bash
+uv run mcp install mcp-pyzotero
+```
+
 ## Configuration
 
-The connector is configured to work with local Zotero installations and currently only `user` libraries are supported. 
+The connector is configured to work with local Zotero installations and currently only `user` libraries are supported.
 By default it uses the userid `0`, but you can also set the environment variable `ZOTERO_USER_ID` if needed:
 
 ```bash
-uv run mcp install zotero.py -v ZOTERO_USER_ID=0
+ZOTERO_USER_ID=0 uvx --from git+https://github.com/dr1np/mcp-pyzotero.git mcp-pyzotero
 ```
 
 ## Available Functions
 
 ### Available tools
-- `get_zotero_summary()`: Lists properties about your library including collections, recent items or tags.
+
+- `get_zotero_information()`: Lists properties about your library including collections, recent items or tags.
 - `get_collection_items(collection_key)`: Get all items in a specific collection
 - `get_items_metadata(item_key)`: Get detailed information about specific paper(s), including abstract.
 - `search_library(query, mode)`: Search your Zotero library, with two possible modes: everything or titleCreatorYear.
@@ -74,12 +83,13 @@ This functionality should be extended in the future.
 
 - Python 3.10+
   - pyzotero
-  - mcp[cli]
+  - fastmcp
 - Local Zotero installation
 
 ## Contributing
 
 Contributions are welcome! Please visit the [GitHub repository](https://github.com/dr1np/mcp-pyzotero) to:
+
 - Report issues
 - Submit pull requests
 - Suggest improvements
