@@ -10,7 +10,8 @@ requires-python = ">= 3.10"
 dependencies = [
     "pyzotero >= 1.6.11",
     "httpx[socks]",
-    "fastmcp"
+    "fastmcp",
+    "typer"
 ]
 classifiers = [
 "Development Status :: 3 - Alpha",
