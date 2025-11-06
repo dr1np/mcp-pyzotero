@@ -14,7 +14,7 @@ This builds on the shoulders of the fantastic [pyzotero](https://github.com/ursc
 This is the simplest way to run the MCP server directly from GitHub without any local setup:
 
 ```bash
-uvx --from git+https://github.com/dr1np/mcp-pyzotero.git mcp-pyzotero
+uvx --from git+https://github.com/dr1np/mcp-pyzotero.git --with fastmcp --with pyzotero --with "httpx[socks]" --with typer fastmcp run mcp_pyzotero.zotero:mcp
 ```
 
 Or add it to your Claude Desktop configuration:
@@ -31,7 +31,7 @@ Or add it to your Claude Desktop configuration:
     "mcpServers": {
         "Zotero": {
             "command": "uvx",
-            "args": ["--from", "git+https://github.com/dr1np/mcp-pyzotero.git", "mcp-pyzotero"],
+            "args": ["--from", "git+https://github.com/dr1np/mcp-pyzotero.git", "--with", "fastmcp", "--with", "pyzotero", "--with", "httpx[socks]", "--with", "typer", "fastmcp", "run", "mcp_pyzotero.zotero:mcp"],
             "disabled": false
         }
     }
@@ -50,13 +50,13 @@ Information about Claude Desktop interacting with MCPs can be found [here](https
 git clone https://github.com/dr1np/mcp-pyzotero.git
 cd mcp-pyzotero
 uv sync
-uv run mcp-pyzotero
+fastmcp run mcp_pyzotero.zotero:mcp
 ```
 
-3. Or install the MCP server locally:
+Or use uv directly:
 
 ```bash
-uv run mcp install mcp-pyzotero
+uv run fastmcp run mcp_pyzotero.zotero:mcp
 ```
 
 ## Configuration
@@ -65,7 +65,7 @@ The connector is configured to work with local Zotero installations and currentl
 By default it uses the userid `0`, but you can also set the environment variable `ZOTERO_USER_ID` if needed:
 
 ```bash
-ZOTERO_USER_ID=0 uvx --from git+https://github.com/dr1np/mcp-pyzotero.git mcp-pyzotero
+ZOTERO_USER_ID=0 uvx --from git+https://github.com/dr1np/mcp-pyzotero.git --with fastmcp --with pyzotero --with "httpx[socks]" --with typer fastmcp run mcp_pyzotero.zotero:mcp
 ```
 
 ## Available Functions

@@ -1,10 +1,15 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "mcp-pyzotero"
 version = "0.1.2"
 description = "A Model Control Protocol (MCP) connector for integrating your local Zotero with Claude"
 readme = "README.md"
 authors = [
-{ name = "Samuel Gyger", email = "samuel@gyger.tech" }
+{ name = "Samuel Gyger", email = "samuel@gyger.tech" },
+{ name = "Zifeng Tan", email = "zifengtann@outlook.com"}
 ]
 requires-python = ">= 3.10"
 dependencies = [
@@ -20,7 +25,7 @@ classifiers = [
 ]
 
 [project.scripts]
-mcp-pyzotero = "zotero:main"
+mcp-pyzotero = "mcp_zotero.zotero:main"
 
 [project.urls]
 Homepage = "https://github.com/dr1np/mcp-pyzotero"
